@@ -11,9 +11,9 @@ mlflow.autolog()
 
 
 # Init DagsHub
-dagshub.init(repo_owner='dinesh008luck', repo_name='mlflow_v02', mlflow=True)
+dagshub.init(repo_owner='dinesh008luck', repo_name='mlflow_v03', mlflow=True)
 
-mlflow.set_tracking_uri("https://dagshub.com/dinesh008luck/mlflow_v02.mlflow")
+mlflow.set_tracking_uri("https://dagshub.com/dinesh008luck/mlflow_v03.mlflow")
 
 df = pd.read_csv("https://raw.githubusercontent.com/npradaschnor/Pima-Indians-Diabetes-Dataset/refs/heads/master/diabetes.csv")
 
