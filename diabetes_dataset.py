@@ -8,7 +8,7 @@ import os
 import mlflow
 mlflow.autolog()
 # from sklearn.datasets import load_diabetes
-
+from sklearn.metrics import accuracy_score
 
 # Init DagsHub
 dagshub.init(repo_owner='dinesh008luck', repo_name='mlflow_v03', mlflow=True)
@@ -18,6 +18,7 @@ mlflow.set_tracking_uri("https://dagshub.com/dinesh008luck/mlflow_v03.mlflow")
 df = pd.read_csv("https://raw.githubusercontent.com/npradaschnor/Pima-Indians-Diabetes-Dataset/refs/heads/master/diabetes.csv")
 
 # splitting the data into features and target
+
 
 
 X= df.drop('Outcome',axis=1)
@@ -46,16 +47,21 @@ grid_search = GridSearchCV(estimator=rf,param_grid=param_grid,cv=5,n_jobs=- 1,ve
 
 mlflow.set_experiment('diabetes_data_set')
 
+
+
 with mlflow.start_run():
 
     grid_search.fit(X_train,y_train)
 
     #Displaying the best parameters and best scores
-
+    best_model = grid_search.best_estimator_
     best_params = grid_search.best_params_
     best_score = grid_search.best_score_
-
-    #params
+    y_pred = best_model.predict(X_test)
+    test_accuracy = accuracy_score(y_test, y_pred)
+    
+    mlflow.log_metric("test_accuracy", test_accuracy)
+        #params
 
     # mlflow.log_params(best_params)
 
@@ -83,7 +89,9 @@ with mlflow.start_run():
         mlflow.log_artifact(__file__)
 
     #model
-    mlflow.sklearn.log_model(grid_search.best_estimator_, "random_forest_model")
+    mlflow.sklearn.log_model(sk_model=grid_search.best_estimator_, 
+                             artifact_path="model",
+                             registered_model_name="random_forest_model")
 
     #tags
     mlflow.set_tag("author","Dinesh")
